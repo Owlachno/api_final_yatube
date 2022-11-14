@@ -2,7 +2,6 @@ from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator
 
-
 from posts.models import Comment, Post, Group, Follow, User
 
 
@@ -53,9 +52,10 @@ class FollowSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate(self, data):
-        if data["user"] == data["following"]:
+    def validate_following(self, value):
+        print(self)
+        if self.context['request'].user == value:
             raise serializers.ValidationError(
                 "Нельзя подписаться на самого себя!"
             )
-        return data
+        return value
